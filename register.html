@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            background-image: url("https://th.bing.com/th/id/R.1a5cb36f71e2d227f15ec547a58856d1?rik=4Xz8ri5lWSTO%2bA&riu=http%3a%2f%2fcdn.wallpapersafari.com%2f38%2f86%2fiPIz8t.jpg&ehk=XOrDJrixDv5cUhp5tb005g%2bRm6fIuTQYsJNNvbPHo38%3d&risl=&pid=ImgRaw&r=0");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 50px;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        input[type="password"] {
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            width: 300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: box-shadow 0.3s;
+            font-size: 1em;
+            color: #333;
+        }
+
+        input[type="password"]:focus {
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(90deg, rgba(255, 102, 102, 1) 0%, rgba(255, 204, 0, 1) 100%);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, rgba(255, 204, 0, 1) 0%, rgba(255, 153, 0, 1) 100%);
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #response {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="registerForm">
+        <div class="input-container">
+            <label>Password:</label>
+            <input type="password" id="password" required>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+
+    <p id="response"></p>
+    <button id="loginBtn" style="display:none;" onclick="goToLogin()">Go to Login</button>
+
+    <script>
+        document.getElementById("registerForm").onsubmit = async function(event) {
+            event.preventDefault();
+            
+            let response = await fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ password: document.getElementById("password").value })
+            });
+
+            let result = await response.json();
+
+            if (response.ok) {
+                document.getElementById("response").innerHTML = 
+                    "✅ Registered successfully! <br> Your username: <b>" + result.username + "</b><br> Save this username for login.";
+                document.getElementById("loginBtn").style.display = "block";
+            } else {
+                document.getElementById("response").innerText = "❌ Registration failed. Try again.";
+            }
+        };
+
+        function goToLogin() {
+            window.location.href = "/login";
+        }
+    </script>
+</body>
+</html>
