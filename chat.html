@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            background-image: url("https://th.bing.com/th/id/R.1a5cb36f71e2d227f15ec547a58856d1?rik=4Xz8ri5lWSTO%2bA&riu=http%3a%2f%2fcdn.wallpapersafari.com%2f38%2f86%2fiPIz8t.jpg&ehk=XOrDJrixDv5cUhp5tb005g%2bRm6fIuTQYsJNNvbPHo38%3d&risl=&pid=ImgRaw&r=0");
+            background-size: cover;
+            background-position: all;
+            background-repeat: no-repeat;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1.2em;
+        }
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            width: 300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: box-shadow 0.3s;
+            font-size: 1em;
+            color: #333;
+        }
+        input[type="text"]:focus {
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(90deg, rgba(255, 102, 102, 1) 0%, rgba(255, 204, 0, 1) 100%);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, rgba(255, 204, 0, 1) 0%, rgba(255, 153, 0, 1) 100%);
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #messages-container {
+            margin-top: 20px;
+            padding: 10px;
+            max-width: 600px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            text-align: left;
+            display: inline-block;
+        }
+        .message {
+            background: rgba(255, 255, 255, 0.8);
+            color: black;
+            padding: 8px;
+            margin: 5px;
+            border-radius: 10px;
+        }
+        .sender {
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function sendMessage() {
+            const receiver = document.getElementById("receiver").value;
+            const message = document.getElementById("message").value;
+
+            fetch("/send_message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ receiver, message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                document.getElementById("message").value = ""; // Clear input after sending
+                loadMessages(); // Refresh messages
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function loadMessages() {
+            fetch("/messages")
+            .then(response => response.json())
+            .then(data => {
+                const messagesContainer = document.getElementById("messages-container");
+                messagesContainer.innerHTML = "";
+                data.messages.forEach(msg => {
+                    const messageElement = document.createElement("div");
+                    messageElement.classList.add("message");
+                    messageElement.innerHTML = `<span class="sender">${msg.sender}:</span> ${msg.message}`;
+                    messagesContainer.appendChild(messageElement);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function logout() {
+            window.location.href = "/logout";
+        }
+
+        // Auto-refresh messages every 5 seconds
+        setInterval(loadMessages, 5000);
+    </script>
+</head>
+<body>
+    <h2>Welcome, {{ username }}</h2>
+    <div class="input-container">
+        <label>Receiver Username:</label>
+        <input type="text" id="receiver" placeholder="Receiver's username">
+    </div>
+    <div class="input-container">
+        <label>Message:</label>
+        <input type="text" id="message" placeholder="Type your message">
+    </div>
+    <button onclick="sendMessage()">Send Message</button>
+    <button onclick="logout()">Logout</button>
+
+    <h3>Your Messages</h3>
+    <div id="messages-container"></div>
+</body>
+</html>
