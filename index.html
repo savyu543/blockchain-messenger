@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #e9ecef;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .messages-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h2>Blockchain Chat</h2>
+    
+    <div class="container">
+        <h3>Send Message</h3>
+        <input id="sender" type="text" placeholder="Sender">
+        <input id="receiver" type="text" placeholder="Receiver">
+        <input id="message" type="text" placeholder="Message">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="container">
+        <h3>Retrieve Messages</h3>
+        <input id="fetchSender" type="text" placeholder="Your Username">
+        <input id="fetchReceiver" type="text" placeholder="Receiver Username">
+        <button onclick="fetchMessages()">Get Messages</button>
+    </div>
+
+    <div class="container messages-container">
+        <h3>Messages:</h3>
+        <ul id="messages"></ul>
+    </div>
+
+    <script>
+        var socket = io();
+
+        function sendMessage() {
+            let sender = document.getElementById("sender").value;
+            let receiver = document.getElementById("receiver").value;
+            let message = document.getElementById("message").value;
+
+            fetch("/add_message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sender, receiver, message })
+            }).then(res => res.json()).then(data => {
+                console.log(data);
+                alert(data.message);
+            });
+        }
+
+        function fetchMessages() {
+            let sender = document.getElementById("fetchSender").value;
+            let receiver = document.getElementById("fetchReceiver").value;
+
+            fetch(`/get_messages_by_sender_receiver/${sender}/${receiver}`)
+            .then(res => res.json())
+            .then(data => {
+                let messagesList = document.getElementById("messages");
+                messagesList.innerHTML = ""; 
+
+                if (data.messages) {
+                    data.messages.forEach(msg => {
+                        let item = document.createElement("li");
+                        item.textContent = `${msg.sender} to ${msg.receiver}: ${msg.message}`;
+                        messagesList.appendChild(item);
+                    });
+                } else {
+                    alert("No messages found.");
+                }
+            });
+        }
+
+        socket.on("new_message", function(data) {
+            let messagesList = document.getElementById("messages");
+            let item = document.createElement("li");
+            item.textContent = `${data.sender} to ${data.receiver}: (Encrypted)`;
+            messagesList.appendChild(item);
+        });
+    </script>
+</body>
+</html>
