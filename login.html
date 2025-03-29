@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            background-image: url("https://img.freepik.com/premium-photo/black-dragon-dark-background_1014206-35.jpg");
+            background-size: cover;
+            background-position: all;
+            background-repeat: no-repeat;
+            color: white; /* Change text color for better visibility */
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 50px;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5); /* Dark overlay for better text visibility */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 2.5em; /* Larger font size for the heading */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Shadow for the heading */
+        }
+
+        form {
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background for the form */
+            padding: 20px;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow for the form */
+            display: inline-block; /* Center the form */
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1.2em; /* Slightly larger font for labels */
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            border: none;
+            border-radius: 25px; /* Rounded corners */
+            width: 250px; /* Width for input fields */
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+            transition: box-shadow 0.3s; /* Transition for shadow */
+            font-size: 1em; /* Font size for input */
+            color: #333; /* Dark text color for input */
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.8); /* Glow effect on focus */
+            outline: none; /* Remove default outline */
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px; /* Rounded corners */
+            background: linear-gradient(90deg, rgba(255, 102, 102, 1) 0%, rgba(255, 204, 0, 1) 100%); /* Gradient background */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px; /* Space above the button */
+            transition: background-color 0.3s, transform 0.2s; /* Added transform transition */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow for buttons */
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, rgba(255, 204, 0, 1) 0%, rgba(255, 153, 0, 1) 100%); /* Change gradient on hover */
+            transform: scale(1.05); /* Slightly enlarge button on hover */
+        }
+
+        button:active {
+            transform: scale(0.95); /* Slightly shrink button on click */
+        }
+    </style>
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required><br>
+        <button type="submit">Login</button>
+    </form>
+    <script>
+        document.getElementById("loginForm").onsubmit = async function(event) {
+            event.preventDefault();
+            let response = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: document.getElementById("username").value,
+                    password: document.getElementById("password").value
+                })
+            });
+            let result = await response.json();
+            alert(result.message);
+            if (result.message === "Login successful!") window.location.href = "/";
+        };
+    </script>
+</body>
+</html>
