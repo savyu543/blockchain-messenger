@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <style>
+        body {
+            background-image: url("https://coolwallpapers.me/picsup/2843166-video-games-dragon-deathwing-world-of-warcraft___game-wallpapers.jpg");
+            background-size: cover;
+            background-position: all;
+            background-repeat: no-repeat;
+            color: white; /* Change text color for better visibility */
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 50px;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5); /* Dark overlay for better text visibility */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 2.5em; /* Larger font size for the heading */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Shadow for the heading */
+        }
+
+        ul {
+            list-style-type: none; /* Remove default list styling */
+            padding: 0; /* Remove padding */
+            margin: 0; /* Remove margin */
+            max-width: 600px; /* Limit width of the message list */
+            margin: 0 auto; /* Center the list */
+            background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent background for the list */
+            border-radius: 10px; /* Rounded corners */
+            padding: 20px; /* Padding inside the list */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow for the list */
+        }
+
+        li {
+            margin: 10px 0; /* Space between messages */
+            padding: 10px; /* Padding for each message */
+            border-radius: 5px; /* Rounded corners for messages */
+            background-color: rgba(255, 255, 255, 0.2); /* Slightly transparent background for messages */
+            transition: background-color 0.3s; /* Transition for hover effect */
+        }
+
+        li:hover {
+            background-color: rgba(255, 204, 0, 0.3); /* Change background on hover */
+        }
+
+        a {
+            display: inline-block; /* Make the link a block element */
+            margin-top: 20px; /* Space above the link */
+            padding: 10px 20px; /* Padding for the link */
+            border-radius: 25px; /* Rounded corners */
+            background: linear-gradient(90deg, rgba(255, 102, 102, 1) 0%, rgba(255, 204, 0, 1) 100%); /* Gradient background */
+            color: white; /* Text color */
+            text-decoration: none; /* Remove underline */
+            transition: background-color 0.3s, transform 0.2s; /* Transition for hover effect */
+        }
+
+        a:hover {
+            background: linear-gradient(90deg, rgba(255, 204, 0, 1) 0%, rgba(255, 153, 0, 1) 100%); /* Change gradient on hover */
+            transform: scale(1.05); /* Slightly enlarge link on hover */
+        }
+    </style>
+</head>
+<body>
+    <h2>Your Messages</h2>
+    {% if messages %}
+        <ul>
+            {% for msg in messages %}
+                <li><strong>{{ msg.sender }}</strong> to <strong>{{ msg.receiver }}</strong>: {{ msg.message }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No messages found.</p>
+    {% endif %}
+    <a href="/">Back to Chat</a>
+</body>
+</html>
